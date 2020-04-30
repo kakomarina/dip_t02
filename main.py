@@ -3,16 +3,12 @@ import imageio
 import math
 
 
-def RSE(m, r):
-    err = 0
-    for i in range(len(m)):
-        for j in range(len(m[i])):
-            err = err + (m[i][j] - r[i][j]) ** 2
-    return math.sqrt(err)
+def RSE(input_img, output_img):
+    return np.sqrt(np.sum(np.power(output_img.astype(np.float32) - input_img.astype(np.float32), 2)))
 
 
 def gaussianKernelEquation(x, sigma):
-    return (1.0 / (2.0 * math.pi * (sigma ** 2.0))) * (math.exp(-(x ** 2) / 2.0 * (sigma ** 2)))
+    return (1.0 / (2.0 * np.pi * (np.power(sigma, 2)))) * (np.exp(-(np.power(x, 2)) / (2.0 * (np.power(sigma, 2)))))
 
 
 def createSpatialGaussianComponent(sigmaS, n):
@@ -21,7 +17,7 @@ def createSpatialGaussianComponent(sigmaS, n):
     for x in range(0, n):
         for y in range(0, n):
             spatial_gaussian[x][y] = gaussianKernelEquation(
-                euclidian_distance(n / 2, n / 2, x, y), sigmaS
+                euclidian_distance(int((n-1)/2), int((n-1) / 2), x, y), sigmaS
             )
 
     return spatial_gaussian
@@ -39,7 +35,7 @@ def bilateral_filter(f, spatial_gaussian, sigmaR):
     b = int((m - 1) / 2)
 
     # new image to store filtered pixels
-    g = np.zeros(f.shape, dtype=np.float32)
+    g = np.zeros(f.shape, dtype=np.uint8)
 
     # calculating padded image
     padded = np.pad(f, max(a, b))
@@ -48,22 +44,23 @@ def bilateral_filter(f, spatial_gaussian, sigmaR):
     for x in range(a, N+a):
         for y in range(b, M+b):
             # passo 1: calcular a range Gaussian
-            range_gaussian = np.zeros((n, m), dtype=np.float64)
+            range_gaussian = np.zeros((n, m), dtype=np.float32)
             Wp = 0
-
+            If = 0.0
             # para cada vizinho
             for xi in range(x - a, x + a + 1):
                 for yi in range(y - b, y + b + 1):
                     # calcular a range gaussian
                     range_gaussian[xi - (x - a)][yi - (y - b)] = gaussianKernelEquation(
                         (padded[xi][yi]*1.0) - (padded[x][y]*1.0), sigmaR)
+                    # calcular wi para o pixel correspondente
                     wi = range_gaussian[xi - (x - a)][yi -
                                                       (y - b)] * spatial_gaussian[xi - (x - a)][yi - (y - b)]
-                    Wp = Wp + wi
-                    g[x-a][y-b] = g[x-a][y-b] + wi * padded[xi][yi]
-            g[x-a][y-b] = int(g[x-a][y-b]*1.0 / Wp)
+                    Wp = float(Wp + wi)
+                    If = If + float(wi * padded[xi][yi])
+            g[x-a][y-b] = int(If / Wp)
 
-    return g.astype(np.uint8)
+    return g
 
 
 filename = str(input()).rstrip()
@@ -86,5 +83,7 @@ elif method == 2:
 elif method == 3:
     sigmaRow = float(input())
 
+if save == 1:
+    imageio.imwrite("output_img.png", output_image)
 
-print(RSE(input_img.astype(np.float32), output_image.astype(np.float32)))
+print(RSE(input_img, output_image))
