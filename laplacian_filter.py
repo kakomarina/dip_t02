@@ -16,7 +16,7 @@ def image_convolution(img, convolution_filter):
     # image after filter
     image_filtered = np.zeros(img.shape, dtype=np.uint8)
 
-    # for all pixels the original image
+    # for all pixels in the original image
     for x in range(a, N+a):
         for y in range(b, M+b):
             # region centered at x,y
