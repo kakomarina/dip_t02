@@ -1,17 +1,21 @@
+# Marcelo de Moraes - 
+# Marina Sleutjes Kako - 9763151
+# Processamento de Imagens - scc0251 2020-1
+
 import numpy as np
 import imageio
 import math
 
 from bilateral_filter import *
 from laplacian_filter import *
-
+from vignette_filter import *
 
 def RSE(input_img, output_img):
     return np.sqrt(np.sum(np.power(output_img.astype(np.float32) - input_img.astype(np.float32), 2)))
 
 
 filename = str(input()).rstrip()
-input_img = imageio.imread("imgs/" + filename)
+input_img = imageio.imread(filename)
 method = int(input())
 save = int(input())
 
@@ -37,7 +41,10 @@ elif method == 2:
     output_image = laplacian_filter(input_img, c, kernel)
 
 elif method == 3:
-    sigmaRow = float(input())
+    sigma_row = float(input())
+    sigma_col = float(input())
+
+    output_image = vignette_filter(input_img, sigma_row, sigma_col)
 
 if save == 1:
     imageio.imwrite("output_img.png", output_image)

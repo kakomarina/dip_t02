@@ -11,7 +11,7 @@ def image_convolution(img, convolution_filter):
     b = int((m-1)/2)
 
     # creating a zero padded image
-    img_padded = np.pad(img, max(a,b))
+    img_padded = np.pad(img, max(a,b), mode='constant')
 
     # image after filter
     image_filtered = np.zeros(img.shape, dtype=np.float32)

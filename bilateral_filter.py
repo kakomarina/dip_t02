@@ -34,7 +34,7 @@ def bilateral_filter(f, spatial_gaussian, sigmaR):
     g = np.zeros(f.shape, dtype=np.uint8)
 
     # calculating padded image
-    padded = np.pad(f, max(a, b))
+    padded = np.pad(f, max(a, b), mode='constant')
 
     # for every pixel
     for x in range(a, N+a):
