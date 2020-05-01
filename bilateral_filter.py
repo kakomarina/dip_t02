@@ -3,16 +3,16 @@ import imageio
 import math
 
 
-def gaussianKernelEquation(x, sigma):
+def gaussian_kernel_equation(x, sigma):
     return (1.0 / (2.0 * np.pi * (np.power(sigma, 2)))) * (np.exp(-(np.power(x, 2)) / (2.0 * (np.power(sigma, 2)))))
 
 
-def createSpatialGaussianComponent(sigmaS, n):
+def create_spatial_gaussian_component(sigmaS, n):
     spatial_gaussian = np.zeros((n, n), dtype=np.float32)
 
     for x in range(0, n):
         for y in range(0, n):
-            spatial_gaussian[x][y] = gaussianKernelEquation(
+            spatial_gaussian[x][y] = gaussian_kernel_equation(
                 euclidian_distance(int((n-1)/2), int((n-1) / 2), x, y), sigmaS
             )
 
@@ -47,7 +47,7 @@ def bilateral_filter(f, spatial_gaussian, sigmaR):
             for xi in range(x - a, x + a + 1):
                 for yi in range(y - b, y + b + 1):
                     # calcular a range gaussian
-                    range_gaussian[xi - (x - a)][yi - (y - b)] = gaussianKernelEquation(
+                    range_gaussian[xi - (x - a)][yi - (y - b)] = gaussian_kernel_equation(
                         (padded[xi][yi]*1.0) - (padded[x][y]*1.0), sigmaR)
                     # calcular wi para o pixel correspondente
                     wi = range_gaussian[xi - (x - a)][yi -

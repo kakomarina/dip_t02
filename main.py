@@ -19,9 +19,8 @@ if method == 1:
     n = int(input())
     sigmaS = float(input())
     sigmaR = float(input())
-    spatial_gaussian = createSpatialGaussianComponent(sigmaS, n)
+    spatial_gaussian = create_spatial_gaussian_component(sigmaS, n)
     output_image = bilateral_filter(input_img, spatial_gaussian, sigmaR)
-
 
 elif method == 2:
     c = float(input())

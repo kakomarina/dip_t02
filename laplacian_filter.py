@@ -11,10 +11,10 @@ def image_convolution(img, convolution_filter):
     b = int((m-1)/2)
 
     # creating a zero padded image
-    img_padded = np.pad(img, int(n/2))
+    img_padded = np.pad(img, max(a,b))
 
     # image after filter
-    image_filtered = np.zeros(img.shape, dtype=np.uint8)
+    image_filtered = np.zeros(img.shape, dtype=np.float32)
 
     # for all pixels in the original image
     for x in range(a, N+a):
@@ -24,7 +24,7 @@ def image_convolution(img, convolution_filter):
 
             # convoluting filter and image region
             image_filtered[x-a][y-b] = np.sum(np.multiply(
-                region_to_be_filtered, convolution_filter)).astype(np.uint8)
+                region_to_be_filtered, convolution_filter))
 
     return image_filtered
 
@@ -47,11 +47,11 @@ def laplacian_filter(img, c, kernel):
     # Image padded convolution with given kernel
     convoluted_image = image_convolution(img, kernel)
 
-    # Imag scaling with normalization function
+    # Image scaling with normalization function
     normalized_image = image_normalization(convoluted_image, 255)
 
     # Adding filtered image * c with original image
     image_added = filter_addition(img, normalized_image, c)
 
     # Scaling final image and returning it
-    return image_normalization(image_added, 255)
+    return image_normalization(image_added, 255).astype(np.uint8)
