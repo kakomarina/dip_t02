@@ -11,7 +11,7 @@ def image_convolution(img, convolution_filter):
     b = int((m-1)/2)
 
     # creating a zero padded image
-    img_padded = np.pad(img, max(a,b), mode='constant')
+    img_padded = np.pad(img, max(a, b), mode='constant')
 
     # image after filter
     image_filtered = np.zeros(img.shape, dtype=np.float32)
@@ -33,7 +33,8 @@ def image_convolution(img, convolution_filter):
 # max_scale_val is equal to the maximum value in a certain scale
 # 8 bit greyscale maximum is 255
 def image_normalization(img, max_scale_val):
-    normilzed_image = ((img - np.min(img)) * max_scale_val) / np.max(img)
+    normilzed_image = ((img - np.min(img)) * max_scale_val) / \
+        (np.max(img) - np.min(img))
     return normilzed_image
 
 
