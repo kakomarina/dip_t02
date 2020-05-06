@@ -4,7 +4,7 @@ import math
 
 
 def gaussian_kernel_equation(x, sigma):
-    return (1.0 / (2.0 * np.pi * (np.power(sigma, 2)))) * (np.exp(-(np.power(x, 2)) / (2.0 * (np.power(sigma, 2)))))
+    return (1.0 / (2.0 * np.pi * (sigma**2))) * (np.exp(-(x**2) / (2.0 * (sigma**2))))
 
 
 def create_spatial_gaussian_component(sigmaS, n):
@@ -20,7 +20,7 @@ def create_spatial_gaussian_component(sigmaS, n):
 
 
 def euclidian_distance(cx, cy, x, y):
-    return np.sqrt((x - cx) ** 2 + (y - cy) ** 2)
+    return np.sqrt((x - cx)**2 + (y - cy)**2)
 
 
 def bilateral_filter(f, spatial_gaussian, sigmaR):
@@ -36,11 +36,11 @@ def bilateral_filter(f, spatial_gaussian, sigmaR):
     # calculating padded image
     padded = np.pad(f, max(a, b), mode='constant')
 
+    range_gaussian = np.zeros((n, m), dtype=np.float32)
     # for every pixel
     for x in range(a, N+a):
         for y in range(b, M+b):
             # passo 1: calcular a range Gaussian
-            range_gaussian = np.zeros((n, m), dtype=np.float32)
             Wp = 0
             If = 0.0
             # para cada vizinho
@@ -48,12 +48,12 @@ def bilateral_filter(f, spatial_gaussian, sigmaR):
                 for yi in range(y - b, y + b + 1):
                     # calcular a range gaussian
                     range_gaussian[xi - (x - a)][yi - (y - b)] = gaussian_kernel_equation(
-                        (padded[xi][yi]*1.0) - (padded[x][y]*1.0), sigmaR)
+                        float(padded[xi][yi]) - float(padded[x][y]), sigmaR)
                     # calcular wi para o pixel correspondente
                     wi = range_gaussian[xi - (x - a)][yi -
                                                       (y - b)] * spatial_gaussian[xi - (x - a)][yi - (y - b)]
                     Wp = float(Wp + wi)
-                    If = If + float(wi * padded[xi][yi])
+                    If = If + float(wi*padded[xi][yi])
             g[x-a][y-b] = int(If / Wp)
 
     return g
