@@ -5,6 +5,11 @@
 
 #### Authors: Marina Kako and Marcelo de Moraes
 
+* Methods:
+ 1. Bilateral filter
+ 2. Laplacian filter
+ 3. Vignette filter
+
 * Input: 
 
 ``` 
